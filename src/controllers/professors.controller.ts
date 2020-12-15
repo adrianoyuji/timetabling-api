@@ -31,7 +31,7 @@ const store = async (req: Request, res: Response) => {
     return res.status(400).send({ data: {}, error: error });
   }
 
-  const professorExists = await Professor.find({ code: req.body.code });
+  const professorExists = await Professor.findOne({ code: req.body.code });
   console.log(professorExists);
   if (!!professorExists.length) {
     return res
@@ -55,7 +55,39 @@ const store = async (req: Request, res: Response) => {
   res.status(201).send({ data: professor });
 };
 
+const show = async (req: Request, res: Response) => {
+  const professor = await Professor.findOne({ code: req.params.id });
+
+  if (professor) {
+    res.status(200).send({ data: professor });
+  } else {
+    res.status(404).send({ error: "Professor not found", data: {} });
+  }
+};
+
+const update = async (req: Request, res: Response) => {
+  let professor = await Professor.findOne({ code: req.params.id });
+  if (professor) {
+    const updates = {
+      name: req.body.name,
+      email: req.body.email,
+      workload: req.body.workload,
+      preferences: req.body.preferences,
+      active: req.body.active,
+      courses: req.body.courses,
+    };
+
+    await Professor.updateOne({ code: req.params.id }, { ...updates });
+    professor = await Professor.findOne({ code: req.params.id });
+    res.status(200).send({ data: professor });
+  } else {
+    res.status(404).send({ error: "Professor not found", data: {} });
+  }
+};
+
 export default {
   store,
   list,
+  show,
+  update,
 };
