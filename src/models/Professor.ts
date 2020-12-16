@@ -38,7 +38,7 @@ const ProfessorSchema: Schema = new Schema(
     courses: { type: Array },
     user_id: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: true, minimize: false }
 );
 
 export default mongoose.models.Professor ||

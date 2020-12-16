@@ -17,7 +17,7 @@ const professorSchema = Joi.object({
 });
 
 const list = async (req: Request, res: Response) => {
-  const professors = await Professor.find({ user_id: req.body.user_id });
+  const professors = await Professor.find({ user_id: req.params.id });
   if (professors) {
     return res.status(200).send({ data: professors });
   } else {
@@ -32,8 +32,8 @@ const store = async (req: Request, res: Response) => {
   }
 
   const professorExists = await Professor.findOne({ code: req.body.code });
-  console.log(professorExists);
-  if (!!professorExists.length) {
+
+  if (!!professorExists) {
     return res
       .status(400)
       .send({ data: {}, error: "professor code already exists" });
@@ -85,9 +85,22 @@ const update = async (req: Request, res: Response) => {
   }
 };
 
+const destroy = async (req: Request, res: Response) => {
+  try {
+    await Professor.deleteOne({
+      code: req.query.code,
+      user_id: req.query.user_id,
+    });
+    res.status(200).send({ data: {} });
+  } catch (err) {
+    res.status(404).send({ error: "Course not found", data: {} });
+  }
+};
+
 export default {
   store,
   list,
   show,
   update,
+  destroy,
 };

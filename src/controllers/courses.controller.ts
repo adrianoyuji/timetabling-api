@@ -16,7 +16,7 @@ const courseSchema = Joi.object({
 });
 
 const list = async (req: Request, res: Response) => {
-  const courses = await Course.find({ user_id: req.body.user_id });
+  const courses = await Course.find({ user_id: req.params.id });
   if (courses) {
     return res.status(200).send({ data: courses });
   } else {
@@ -31,7 +31,7 @@ const store = async (req: Request, res: Response) => {
   }
 
   const courseExists = await Course.findOne({ tag: req.body.tag });
-  console.log(courseExists);
+
   if (!!courseExists) {
     return res
       .status(400)
@@ -64,12 +64,15 @@ const show = async (req: Request, res: Response) => {
 };
 
 const update = async (req: Request, res: Response) => {
-  let course = await Course.findOne({ tag: req.params.id });
+  let course = await Course.findOne({
+    tag: req.params.id,
+    user_id: req.body.user_id,
+  });
   if (course) {
     const updates = {
       name: req.body.name,
       periods: req.body.periods,
-      semesters: req.body.semester,
+      semesters: req.body.semesters,
       subjects: req.body.subjects,
       active: req.body.active,
     };
@@ -82,9 +85,19 @@ const update = async (req: Request, res: Response) => {
   }
 };
 
+const destroy = async (req: Request, res: Response) => {
+  try {
+    await Course.deleteOne({ tag: req.query.tag, user_id: req.query.user_id });
+    res.status(200).send({ data: {} });
+  } catch (err) {
+    res.status(404).send({ error: "Course not found", data: {} });
+  }
+};
+
 export default {
   store,
   list,
   show,
   update,
+  destroy,
 };

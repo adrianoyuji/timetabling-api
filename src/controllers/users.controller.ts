@@ -30,7 +30,9 @@ const login = async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Invalid password" });
   }
 
-  return res.status(200).json({ data: { user } });
+  return res
+    .status(200)
+    .json({ data: { email: user.email, name: user.name, _id: user._id } });
 };
 
 const register = async (req: Request, res: Response) => {

@@ -37,7 +37,7 @@ const CourseSchema: Schema = new Schema(
     subjects: { type: Array },
     user_id: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: true, minimize: false }
 );
 
 export default mongoose.models.Course ||
