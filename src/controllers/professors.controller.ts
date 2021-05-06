@@ -5,7 +5,7 @@ import Joi from "joi";
 const professorSchema = Joi.object({
   name: Joi.string().min(6).required(),
   email: Joi.string().min(6).required().email(),
-  code: Joi.string().min(6).required(),
+  code: Joi.string().required(),
   workload: Joi.object({ min: Joi.number(), max: Joi.number() }),
   preferences: Joi.object({
     schedule: Joi.object(),
@@ -28,6 +28,7 @@ const list = async (req: Request, res: Response) => {
 const store = async (req: Request, res: Response) => {
   const { error } = professorSchema.validate(req.body);
   if (error) {
+    console.log(error);
     return res.status(400).send({ data: {}, error: error });
   }
 
